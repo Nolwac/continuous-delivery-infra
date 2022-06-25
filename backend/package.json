@@ -38,7 +38,7 @@
     "@nestjs/cqrs": "^6.1.0",
     "@nestjs/jwt": "^6.0.0",
     "@nestjs/passport": "^6.2.0",
-    "@nestjs/platform-express": "^7.0.1",
+    "@nestjs/platform-express": "^7.0.0",
     "@nestjs/swagger": "^3.1.0",
     "@nestjs/typeorm": "^6.3.4",
     "@types/jsonwebtoken": "^7.2.8",
