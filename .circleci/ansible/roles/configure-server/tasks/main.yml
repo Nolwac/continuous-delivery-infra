@@ -1,0 +1,21 @@
+- name: "update apt packages."
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: "upgrade packages"
+  become: yes
+  apt:
+    upgrade: yes
+
+- name: Install python nodejs and npm
+  apt:
+    pkg:
+      - python
+      - nodejs
+      - npm
+
+- name: Install pm2
+  become: yes
+  command:
+    cmd: npm install pm2@latest -g

@@ -168,6 +168,31 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment
 
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["65:4a:d2:be:9c:26:a5:40:71:50:8d:09:75:cf:4a:e0"]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            # install the dependencies needed for your playbook
+            apk add --update ansible
+      - run:
+          name: Install open ssh 
+          command: apk add --update openssh-client git
+      - run:
+          name: install awscli
+          command: python -m pip install awscli
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -i inventory.txt ~/.circleci/ansible/configure-server.yml
+
 workflows:
   default:
     jobs:
@@ -187,3 +212,5 @@ workflows:
           filters:
             branches:
               only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
