@@ -11,7 +11,7 @@
 - name: Install python nodejs and npm
   apt:
     pkg:
-      - python
+      - python3-pip
       - nodejs
       - npm
 
