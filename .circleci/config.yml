@@ -201,6 +201,8 @@ jobs:
       - image: cimg/node:13.8.0
     steps:
       - checkout
+      - run: sudo apt update
+      - run: sudo apt ugrade
       - run:
           name: install awscli
           command: sudo apt install awscli -y
