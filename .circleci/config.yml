@@ -202,7 +202,7 @@ jobs:
     steps:
       - checkout
       - run: sudo apt update
-      - run: sudo apt ugrade
+      - run: sudo apt upgrade
       - run:
           name: install awscli
           command: sudo apt install awscli -y
