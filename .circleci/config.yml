@@ -39,7 +39,7 @@ jobs:
       
   build-frontend:
     docker:
-      - image: circleci/node:13.8.0
+     - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -56,7 +56,7 @@ jobs:
   
   build-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -73,7 +73,7 @@ jobs:
 
   test-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -87,7 +87,7 @@ jobs:
   
   test-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -116,7 +116,7 @@ jobs:
 
   scan-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -198,14 +198,20 @@ jobs:
   
   run-migrations:
     docker:
-      - image: cimg/node:12.16
+      - image: cimg/node:13.8.0
     steps:
       - checkout
+      - run:
+          name: install awscli
+          command: sudo apt install awscli -y
       - run:
           name: Run migrations
           command: |
             cd backend
             npm install
+            npm audit fix --audit-level=critical --force
+            npm audit fix --force
+            npm audit --audit-level=critical
             npm run migrations > migrations_dump.txt
       - run:
           name: Send migration results to kvdb
@@ -217,6 +223,41 @@ jobs:
               curl https://kvdb.io/Mr2z5EoQzmMic16w358Tmu/migration_${CIRCLE_WORKFLOW_ID:0:6}  -d 'false'
             fi
       - destroy-environment
+
+  deploy-frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: yum install -y tar gzip
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --tags project=udapeople-backend \
+              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:6}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:6}"  
+      - run:
+          name: Get backend url
+          command: |
+            export BACKEND_IP=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:6}" \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:6} --recursive
+      - destroy-environment    
 
 workflows:
   default:
