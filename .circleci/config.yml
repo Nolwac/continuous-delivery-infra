@@ -225,10 +225,14 @@ jobs:
 
   deploy-frontend:
     docker:
-      - image: amazon/aws-cli
+      - image: cimg/node:13.8.0
     steps:
       - checkout
-      - run: yum install -y tar gzip
+      - run: sudo apt update -y
+      - run: sudo apt upgrade -y
+      - run:
+          name: install awscli
+          command: sudo apt install awscli -y
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -281,3 +285,5 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
