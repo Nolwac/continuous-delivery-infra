@@ -273,12 +273,7 @@ jobs:
           fingerprints: ["65:4a:d2:be:9c:26:a5:40:71:50:8d:09:75:cf:4a:e0"]
       - attach_workspace:
           at: ~/
-      - run:
-          name: install and enable openssh
-          command: |
-            sudo apt install openssh-server -y
-            sudo systemctl enable ssh
-            sudo systemctl start ssh
+      
       - run:
           name: Deploy Backend
           command: |
