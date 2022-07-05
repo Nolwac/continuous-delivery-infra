@@ -3,12 +3,7 @@
     path: ~/app
     state: directory
     mode: '0755'
-
-# - name: copy artifact from local 
-#   copy:
-#     src: /home/circleci/project/artifact.tar.gz
-#     dest: ~/app/artifact.tar.gz
-
+    
 - name: extract artifact
   unarchive:
     src: /home/circleci/project/artifact.tar.gz
