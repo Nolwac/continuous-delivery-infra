@@ -1,8 +1,10 @@
 - name: Create app directory
-  command:
-    cmd: mkdir ~/app
-    
-- name: copying artifact from local
+  file:
+    path: ~/app
+    state: directory
+    mode: '0755'
+
+- name: copy artifact from local
   become: true 
   copy:
     src: /home/circleci/project/artifact.tar.gz
