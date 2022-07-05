@@ -268,7 +268,10 @@ jobs:
           command: sudo apt install awscli -y
       - run:
           name: install ansible
-          command: sudo apt install ansible -y
+          command: |
+            sudo apt install python3.7 -y
+            sudo update-alternatives  --set python /usr/bin/python3.7
+            sudo apt install ansible -y
       - add_ssh_keys:
           fingerprints: ["65:4a:d2:be:9c:26:a5:40:71:50:8d:09:75:cf:4a:e0"]
       - attach_workspace:
