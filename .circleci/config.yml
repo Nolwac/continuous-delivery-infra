@@ -233,14 +233,8 @@ jobs:
       - run:
           name: install awscli
           command: sudo apt install awscli -y
-      - run:
-          name: Ensure back-end infrastructure exists
-          command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/backend.yml \
-              --tags project=udapeople-backend \
-              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:6}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:6}"  
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
