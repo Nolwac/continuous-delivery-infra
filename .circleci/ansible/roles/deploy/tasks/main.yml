@@ -1,11 +1,11 @@
 - name: extract artifact
   become: yes
   unarchive:
-    src: ~/project/artifact.tar.gz
-    dest: /
+    src: /home/circleci/project/artifact.tar.gz
+    dest: /app
     remote_src: no
 
 - name: Install dependencies and start server
   become: yes
   command:
-    cmd: npm install && pm2 stop default && pm2 start npm -- start
+    cmd: cd app && npm install && pm2 stop default && pm2 start npm -- start
