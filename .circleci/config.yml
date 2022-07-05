@@ -271,7 +271,7 @@ jobs:
           command: |
             sudo apt install python3.7 -y
             sudo apt install python3-pip -y
-            sudo python3.7 -m pip install ansible --user
+            python3 -m pip install ansible --user
       - add_ssh_keys:
           fingerprints: ["65:4a:d2:be:9c:26:a5:40:71:50:8d:09:75:cf:4a:e0"]
       - attach_workspace:
