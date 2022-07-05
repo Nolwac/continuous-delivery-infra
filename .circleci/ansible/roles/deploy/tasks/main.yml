@@ -1,0 +1,23 @@
+- name: extractor presents
+  ansible.builtin.yum:
+    name:
+      - unzip
+      - tar
+    state: present
+  become: true
+
+- name: extract archive
+  ansible.builtin.unarchive:
+    src: ~/project/artifact.tar.gz
+    dest: ~/app
+    remote_src: false
+    validate_certs: true
+
+- name: Install dependencies and start server
+  become: yes
+  command:
+    cmd: |
+      cd app
+      npm install
+      pm2 stop default
+      pm2 start npm -- start
