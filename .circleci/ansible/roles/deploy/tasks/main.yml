@@ -1,8 +1,8 @@
-# - name: Create app directory
-#   file:
-#     path: ~/app
-#     state: directory
-#     mode: '0755'
+- name: Create app directory
+  file:
+    path: ~/app
+    state: directory
+    mode: '0755'
 
 # - name: copy artifact from local 
 #   copy:
