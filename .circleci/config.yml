@@ -340,7 +340,7 @@ jobs:
             else
               return 1
             fi
-      # - destroy-environment
+      - destroy-environment
 
   cloudfront-update:
     docker:
