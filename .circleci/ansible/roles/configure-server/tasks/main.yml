@@ -1,41 +1,17 @@
-- name: "update apt packages."
-  become: yes
-  apt:
-    update_cache: yes
-
-- name: "upgrade packages"
-  become: yes
+- name: upgrade packages
+  become: true
   apt:
     upgrade: yes
 
-- name: Install python and pip
+- name: Install nodejs and npm
+  become: true
   apt:
-    pkg:
-      - python3-pip
-
-- name: Install NVM
-  shell: >
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-  args:
-    executable: /bin/bash
-    chdir: /home/ubuntu
-    creates: "/home/ubuntu/.nvm/nvm.sh"
-
-- name: Install node and set version
-  become: yes
-  shell: "source /home/ubuntu/.nvm/nvm.sh && nvm install 13.8.0" 
-  args:
-    executable: /bin/bash
-
-- name: Install NPM
-  become: yes
-  apt:
-    name: ["npm"]
+    name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
-    
-- name: Install pm2
-  become: yes
+
+- name: Install pm2 with npm
+  become: true
   npm:
     name: pm2
     global: yes

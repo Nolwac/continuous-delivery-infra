@@ -1,36 +1,27 @@
-- name: Create app directory
+---
+- name: Create app directiory
   file:
-    path: /home/ubuntu/app
+    path: ~/app
     state: directory
-    mode: '0755'
 
-- name: extract artifact
+- name: Extract files to remote (EC2 instance)
   unarchive:
-    src: /home/circleci/project/artifact.tar.gz
-    dest: /home/ubuntu/app
-    remote_src: no
+    src: artifact.tar.gz
+    dest: ~/app
 
-- name: Install dependencies and start server
+- name: install dependencies
+  become: true
   shell: |
-    ls
+    cd backend
     npm install
+
+- name: Start node server daemon with pm2
+  become: true
+  shell: |
     pm2 stop default
-    pm2 start -f ./dist/main.js
-  args:
-    chdir: /home/ubuntu/app
-  register: display_start_log
-  environment:
-    ENVIRONMENT: production
-    TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
-    TYPEORM_MIGRATIONS_DIR: "./migrations"
-    TYPEORM_MIGRATIONS: "./migrations/*.js"
-    TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
-    TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
-    TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
-    TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
-    TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
-    TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
+    cd app
+    pm2 start npm -- start
+  register: starting_server
 
 - debug:
-    msg: "{{ display_start_log.stdout_lines }}"
-
+    msg: "{{ starting_server.stdout_lines }}"
