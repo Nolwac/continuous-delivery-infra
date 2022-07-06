@@ -1,25 +1,25 @@
 ---
 - name: Create app directiory
   file:
-    path: /app
+    path: ~/app
     state: directory
 
 - name: Extract files to remote (EC2 instance)
   unarchive:
     src: /home/circleci/project/artifact.tar.gz
-    dest: /app
+    dest: ~/app
 
 - name: install dependencies
   become: true
   shell: |
-    cd app
+    cd ~/app
     npm install
 
 - name: Start node server daemon with pm2
   become: true
   shell: |
     pm2 stop default
-    cd app
+    cd ~/app
     pm2 start npm -- start
   register: starting_server
 
