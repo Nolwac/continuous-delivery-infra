@@ -3,7 +3,7 @@
     path: ~/app
     state: directory
     mode: '0755'
-    
+
 - name: extract artifact
   unarchive:
     src: /home/circleci/project/artifact.tar.gz
@@ -19,6 +19,24 @@
   args:
     chdir: ~/app
   register: display_start_log
+  environment:
+    ENVIRONMENT: production
+    TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+    TYPEORM_MIGRATIONS_DIR: "./migrations"
+    TYPEORM_MIGRATIONS: "./migrations/*.js"
+    TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
+    TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+    TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
+    TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+    TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+    TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
 
 - debug:
     msg: "{{ display_start_log.stdout_lines }}"
+
+# - name: "start server"
+#     become: true
+#     command: pm2 start -f ./main.js
+#     args:
+#       chdir: /home/ubuntu/uda_app/dist
+    
