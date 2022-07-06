@@ -1,13 +1,13 @@
 - name: Create app directory
   file:
-    path: ~/app
+    path: /home/ubuntu/app
     state: directory
     mode: '0755'
 
 - name: extract artifact
   unarchive:
     src: /home/circleci/project/artifact.tar.gz
-    dest: ~/app
+    dest: /home/ubuntu/app
     remote_src: no
 
 - name: Install dependencies and start server
@@ -17,7 +17,7 @@
     pm2 stop default
     pm2 start -f ./dist/main.js
   args:
-    chdir: ~/app
+    chdir: /home/ubuntu/app
   register: display_start_log
   environment:
     ENVIRONMENT: production
@@ -34,9 +34,3 @@
 - debug:
     msg: "{{ display_start_log.stdout_lines }}"
 
-# - name: "start server"
-#     become: true
-#     command: pm2 start -f ./main.js
-#     args:
-#       chdir: /home/ubuntu/uda_app/dist
-    
