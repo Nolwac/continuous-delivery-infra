@@ -8,7 +8,7 @@
   apt:
     upgrade: yes
 
-- name: Install python nodejs and npm
+- name: Install python and pip
   apt:
     pkg:
       - python3-pip
@@ -18,23 +18,26 @@
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
   args:
     executable: /bin/bash
-    chdir: "{{ ansible_env.HOME }}"
-    creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+    chdir: /home/ubuntu
+    creates: "/home/ubuntu/.nvm/nvm.sh"
 
 - name: Install node and set version
   become: yes
-  become_user: root
-  shell: "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm install 13.8.0" 
+  shell: "source /home/ubuntu/.nvm/nvm.sh && nvm install 13.8.0" 
   args:
     executable: /bin/bash
 
 - name: Install NPM
   become: yes
   apt:
-    pkg:
-      - npm
+    name: ["npm"]
+    state: latest
+    update_cache: yes
     
 - name: Install pm2
   become: yes
-  command:
-    cmd: npm install pm2@latest -g
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
