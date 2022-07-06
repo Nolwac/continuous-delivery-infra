@@ -12,9 +12,23 @@
   apt:
     pkg:
       - python3-pip
-      - nodejs
-      - npm
 
+- name: Install NVM
+  become: yes
+  shell: |
+    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+
+- name: Install Nodejs using NVM
+  become: yes
+  shell: |
+    nvm install 13.8.0
+
+- name: Install NPM
+  become: yes
+  apt:
+    pkg:
+      - npm
+    
 - name: Install pm2
   become: yes
   command:
