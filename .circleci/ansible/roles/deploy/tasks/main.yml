@@ -6,7 +6,7 @@
 
 - name: Extract files to remote (EC2 instance)
   unarchive:
-    src: artifact.tar.gz
+    src: /home/circleci/project/artifact.tar.gz
     dest: ~/app
 
 - name: install dependencies
