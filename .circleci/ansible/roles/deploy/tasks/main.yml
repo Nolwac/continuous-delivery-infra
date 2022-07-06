@@ -12,14 +12,13 @@
 - name: install dependencies
   become: true
   shell: |
-    cd ~/app
+    cd app
     npm install
 
 - name: Start node server daemon with pm2
   become: true
   shell: |
-    pm2 stop default
-    cd ~/app
+    cd app
     pm2 start npm -- start
   register: starting_server
 
