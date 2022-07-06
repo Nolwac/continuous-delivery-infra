@@ -18,10 +18,12 @@
   shell: |
     wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 
-- name: Install Nodejs using NVM
-  become: no
-  shell: |
-    nvm install 13.8.0
+- name: Install node and set version
+  become: yes
+  become_user: root
+  shell: "source /root/.nvm/nvm.sh && nvm install 13.8.0" 
+  args:
+    executable: /bin/bash
 
 - name: Install NPM
   become: yes
