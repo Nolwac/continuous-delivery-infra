@@ -1,64 +1,75 @@
-We are archiving this repository because we do not want learners to push personal development to the current repository. If you have any issues or suggestions to make, feel free to:
-- Utilize the https://knowledge.udacity.com/ forum to seek help on content-specific issues.
-- [Submit a support ticket](https://udacity.zendesk.com/hc/en-us/requests/new) along with the link to your forked repository. 
-- If you are an enterprise learner, please [Submit a support ticket here](https://udacityenterprise.zendesk.com/hc/en-us/requests/new?ticket_form_id=360000279131)
+# Continuous Delivery (Continuous Integration & Continuous Deployment) Infrastructure with Continuous Monitoring
 
-## Give your Application Auto-Deploy Superpowers
+[![Nolwac](https://circleci.com/gh/Nolwac/continuous-delivery-infra.svg?style=svg)](https://circleci.com/gh/Nolwac/continuous-delivery-infra)
 
-In this project, you will prove your mastery of the following learning objectives:
+## Project Overview
 
-- Explain the fundamentals and benefits of CI/CD to achieve, build, and deploy automation for cloud-based software products.
-- Utilize Deployment Strategies to design and build CI/CD pipelines that support Continuous Delivery processes.
-- Utilize a configuration management tool to accomplish deployment to cloud-based servers.
-- Surface critical server errors for diagnosis using centralized structured logging.
+This project is a demonstration of the elegance of Continuous Delivery and Continuous Monitoring. The project is an automated deployment of a frontend and backend infrastructure.
+**This is the HEART of DevOps**
 
-![Diagram of CI/CD Pipeline we will be building.](udapeople.png)
+You can take a look at the *presentation.pdf* file to know why CI/CD and monitoring are very important concepts you can incorperate into your project workflow.
 
-### Instructions
+You can as well take a look at the screenshots in the screenshots folder to see what was done.
 
-* [Selling CI/CD](instructions/0-selling-cicd.md)
-* [Getting Started](instructions/1-getting-started.md)
-* [Deploying Working, Trustworthy Software](instructions/2-deploying-trustworthy-code.md)
-* [Configuration Management](instructions/3-configuration-management.md)
-* [Turn Errors into Sirens](instructions/4-turn-errors-into-sirens.md)
+## Seeing the project in action
 
-### Project Submission
+To run the project, you have to do the following:
+1. Signup on [CircleCi](https://circleci.com)
+2. Signup on Amazon Web Services (AWS)
+3. Create use the *cloudfront.yml* file at *.circleci/files* to create a stack with name *InitialStack* with CloudFormation.
+4. Create a PostgreSQL database on AWS RDS.
+5. Create an IAM user with programmatic access on AWS.
+7. Fork this repo and create a project on CircleCi with the forked repo.
+8. Terminate the initial pipeline workflow triggered when the project is created.
+9. Use the information from step 4 and 5 to create the following environment variable on the circlci project.
+   * AWS_ACCESS_KEY_ID=(from IAM user with programmatic access)
+   * AWS_SECRET_ACCESS_KEY= (from IAM user with programmatic access)
+   * AWS_DEFAULT_REGION=(your default region in aws)
+   * TYPEORM_CONNECTION=postgres
+   * TYPEORM_MIGRATIONS_DIR=./src/migrations
+   * TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts
+   * TYPEORM_MIGRATIONS=./src/migrations/*.ts
+   * TYPEORM_HOST={your postgres database hostname in RDS}
+   * TYPEORM_PORT=5432 (or the port from RDS if it’s different)
+   * TYPEORM_USERNAME={your postgres database username in RDS}
+   * TYPEORM_PASSWORD={your postgres database password in RDS}
+   * TYPEORM_DATABASE=postgres {or your postgres database name in RDS}
+10. Create an EC2 instance (Ubuntu) on AWS following these guides to setup the instance as a Prometheus Server for monitoring.
+   * [Setup Prometheus on the EC2 Instance](https://codewizardly.com/prometheus-on-aws-ec2-part1/)
+   * [Setup the EC2 instance to allow monitoring of instance on AWS](https://codewizardly.com/prometheus-on-aws-ec2-part3/)
+   * [Setup Alert Manager on the EC2 Instance](https://codewizardly.com/prometheus-on-aws-ec2-part4/)
 
-For your submission, please submit the following:
+Once you have done all this, go ahead and make any commit on the forked project to see the Pipeline in action.
+*An example change you could make would be to edit this README, or to add a line of code that would cause the code to break*
 
-- A text file named `urls.txt` including:
-  1. Public Url to GitHub repository (not private) [URL01]
-  1. Public URL for your S3 Bucket (aka, your green candidate front-end) [URL02]
-  1. Public URL for your CloudFront distribution (aka, your blue production front-end) [URL03]
-  1. Public URLs to deployed application back-end in EC2 [URL04]
-  1. Public URL to your Prometheus Server [URL05]
-- Your screenshots in JPG or PNG format, named using the screenshot number listed in the instructions. These screenshots should be included in your code repository in the root folder.
-  1. Job failed because of compile errors. [SCREENSHOT01]
-  1. Job failed because of unit tests. [SCREENSHOT02]
-  1. Job that failed because of vulnerable packages. [SCREENSHOT03]
-  1. An alert from one of your failed builds. [SCREENSHOT04]
-  1. Appropriate job failure for infrastructure creation. [SCREENSHOT05]
-  1. Appropriate job failure for the smoke test job. [SCREENSHOT06]
-  1. Successful rollback after a failed smoke test. [SCREENSHOT07]  
-  1. Successful promotion job. [SCREENSHOT08]
-  1. Successful cleanup job. [SCREENSHOT09]
-  1. Only deploy on pushed to `master` branch. [SCREENSHOT10]
-  1. Provide a screenshot of a graph of your EC2 instance including available memory, available disk space, and CPU usage. [SCREENSHOT11]
-  1. Provide a screenshot of an alert that was sent by Prometheus. [SCREENSHOT12]
+You can observe on your AWS console as infrastructures are being created and destroyed for every commit you make to the master branch of the forked repo.
 
-- Your presentation should be in PDF format named "presentation.pdf" and should be included in your code repository root folder. 
+## Prometheus Monitoring interface.
+To see the Monitoring result navigate to *http://<EC2 Instance Public IP or Public DNS Name>:9090* to see the monitoring interface provided by Prometheus. Example is **http://ec2-3-95-154-68.compute-1.amazonaws.com:9090**.
+Explore the metrics.
 
-Before you submit your project, please check your work against the project rubric. If you haven’t satisfied each criterion in the rubric, then revise your work so that you have met all the requirements. 
+You can try stoping the EC2 instance created by one of the stacks from the cloudformation yml script for some minutes to see Prometheus send you an alert email that your server is down. That's the beauty of Monitoring, but there is a lot more you can do with it.
 
-### Built With
+## How it works
+To understand how it works, you need to first of all recognize these services.
+* AWS cloudformation: is an Infrastructure as Code (IaC) service offered by AWS that allows you create infrastructure to run almost any kind of software/service without visiting the AWS console. You do that completely with code (YAML or JSON).
+* Ansible: allows you to automatically configure servers remotely with code.
+* CircleCi: offers a CI/CD pipeline service that can get triggered when commit, pullrequest and other operations are made on your remote repository.
+* Prometheus: as earlier mentioned is an open source monitoring software.
+* AlertManager: is an open source alert solution for Prometheus.
 
-- [Circle CI](www.circleci.com) - Cloud-based CI/CD service
-- [Amazon AWS](https://aws.amazon.com/) - Cloud services
-- [AWS CLI](https://aws.amazon.com/cli/) - Command-line tool for AWS
-- [CloudFormation](https://aws.amazon.com/cloudformation/) - Infrastrcuture as code
-- [Ansible](https://www.ansible.com/) - Configuration management tool
-- [Prometheus](https://prometheus.io/) - Monitoring tool
+Haven known about these tools/services, let's dive into how they all come together to give you a completely automated workflow from code to production.
 
-### License
+Simple put, Once your codebase (remote repository) is integrated with CircleCi, the following is done on the pipeline:
+* Unit testing and integration testing, code linting and dependency vulnerablility checks are done on the codebase.
+* *awscli* tool is installed and used to execute the cloudformation script in the project to create the infrastructures for the system.
+* Ansible is installed and used to execute the ansible configuration codes (Playbooks) to configure the instances created by the cloudformation script on AWS. This configuration, includes, setting up the environment to run the codebase on and setting up Prometheus *Node-exporter*, a software that monitors the health of the bare metal of the EC2 instance and serves it as endpoint so that prometheus can make calls to the endpoint to collect metrics.
+* A smoke test is done to make sure that the newly deployed system is functional and healthy.
+* At any point if, any of the deployment processes (jobs) fail, then a rollback process is done to destroy the infrastructure that was created.
+* If all the tests/process pass succefully, then the deployment is promoted to be the main production deployment and the previous deployment destroyed. This is what is known as *Blue-Green* deployment strategy.
 
-[License](LICENSE.md)
+And that is it, at point that a server is done, the alert manager sends you an alert, how awesome!
+
+As you may have notice, at the topmost level of this docs, just after the title is a CircleCI badge, which displays the current status of the Pipeline build. Here it is again.
+
+[![Nolwac](https://circleci.com/gh/Nolwac/kubernetes-ml-microservice.svg?style=svg)](https://circleci.com/gh/Nolwac/kubernetes-ml-microservice)
