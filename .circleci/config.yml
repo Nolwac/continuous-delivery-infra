@@ -378,6 +378,8 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/
       - run: yum install -y tar gzip
       - run:
           name: Remove old stacks and files
