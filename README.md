@@ -1,7 +1,5 @@
 # Continuous Delivery (Continuous Integration & Continuous Deployment) Infrastructure with Continuous Monitoring
 
-[![Nolwac](https://circleci.com/gh/Nolwac/continuous-delivery-infra.svg?style=svg)](https://circleci.com/gh/Nolwac/continuous-delivery-infra)
-
 ## Project Overview
 
 This project is a demonstration of the elegance of Continuous Delivery and Continuous Monitoring. The project is an automated deployment of a frontend and backend infrastructure.
@@ -69,7 +67,3 @@ Simple put, Once your codebase (remote repository) is integrated with CircleCi, 
 * If all the tests/process pass succefully, then the deployment is promoted to be the main production deployment and the previous deployment destroyed. This is what is known as *Blue-Green* deployment strategy.
 
 And that is it, at point that a server is done, the alert manager sends you an alert, how awesome!
-
-As you may have notice, at the topmost level of this docs, just after the title is a CircleCI badge, which displays the current status of the Pipeline build. Here it is again.
-
-[![Nolwac](https://circleci.com/gh/Nolwac/kubernetes-ml-microservice.svg?style=svg)](https://circleci.com/gh/Nolwac/kubernetes-ml-microservice)
