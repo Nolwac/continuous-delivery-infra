@@ -36,7 +36,7 @@ commands:
             then
                 cd ~/project/backend
                 npm install
-                npm run migration:revert
+                npm run migrations:revert
             fi  
             
 jobs:
@@ -264,6 +264,7 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:6}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:6} --recursive
       - destroy-environment
+      - revert-migrations
 
   deploy-backend:
     docker:
@@ -302,6 +303,7 @@ jobs:
             cat  ~/inventory.txt
             ansible-playbook -i ~/inventory.txt deploy-backend.yml
       - destroy-environment
+      - revert-migrations
   
   smoke-test:
     docker:
@@ -340,7 +342,8 @@ jobs:
             else
               return 1
             fi
-      # - destroy-environment
+      - destroy-environment
+      - revert-migrations
 
   cloudfront-update:
     docker:
