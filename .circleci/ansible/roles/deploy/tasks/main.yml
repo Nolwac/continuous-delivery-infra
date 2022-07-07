@@ -1,24 +1,24 @@
 ---
 - name: Create app directiory
   file:
-    path: ~/app
+    path: /home/ubuntu/app
     state: directory
 
 - name: Extract files to remote (EC2 instance)
   unarchive:
     src: /home/circleci/project/artifact.tar.gz
-    dest: ~/app
+    dest: /home/ubuntu/app
 
 - name: install dependencies
   become: true
   shell: |
-    cd app
+    cd /home/ubuntu/app
     npm install
 
 - name: Start node server daemon with pm2
   become: true
   shell: |
-    cd app
+    cd /home/ubuntu/app
     pm2 start npm -- start
   register: starting_server
 
