@@ -66,4 +66,4 @@ Simple put, Once your codebase (remote repository) is integrated with CircleCi, 
 * At any point if, any of the deployment processes (jobs) fail, then a rollback process is done to destroy the infrastructure that was created.
 * If all the tests/process pass succefully, then the deployment is promoted to be the main production deployment and the previous deployment destroyed. This is what is known as *Blue-Green* deployment strategy.
 
-And that is it, at point that a server is done, the alert manager sends you an alert, how awesome!
+And that is it, at any point that a server is down, the alert manager sends you an alert, how awesome!
